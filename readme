@@ -1,0 +1,6 @@
+﻿== Initializing Plugins ==
+
+- Utilizing git-bash type the following
+
+$ git submodule init
+$ git submodule update
