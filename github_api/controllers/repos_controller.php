@@ -82,6 +82,7 @@ class ReposController extends GithubApiAppController {
         $data = $this->Repo->find('file', array(
                 'owner' => $owner, 'repo' => $repo, 'sha' => $sha, 'file' => $file
             ));
+         $this->CacheApi->blob($owner, $repo, $sha, $file, $data);
 		$this->set('data', $data['blob']);
 		
 		$info = array('owner' => $owner, 'repo' => $repo, 'sha' => $sha, 'file' => $file, 'previous' => $this->referer());

@@ -5,6 +5,7 @@ class GithubApiAppController extends AppController {
     var $helpers = array('Html', 'Form', 'Javascript');
     
     function beforeFilter() {
+        
         // you need to have this function defined somewhere – I guess bootstrap.php in best place
     	$this->plugin = 'github_api';
     }

@@ -30,6 +30,13 @@ class CacheApiComponent extends Object {
 	    Cache::write('viewed', array_unique($viewed));
 	}
 	
+	function blob($owner, $repo, $sha, $file, $blob) {
+	    $blobs = Cache::read('blobs');
+	    $blobs[$sha] = array('repo' => $repo, 'sha' => $sha, 'owner' => $owner, 'file' => $file, 'blob' => $blob);
+	    sort($blobs);
+	    Cache::write('blobs', array_unique($blobs));
+	}
+	
 	function read($key = '') {
 	    return Cache::read($key);
 	}
