@@ -19,7 +19,7 @@ class Repo extends GithubApiAppModel {
 	    foreach ($params as $key => $value) {
 	        $this->url = str_replace('['.$key.']', $value, $this->url);
 	    }
-	    echo $this->url; die;
+	    //echo $this->url; die;
 	    return self::__decode();
 	}
 	

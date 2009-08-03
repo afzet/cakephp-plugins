@@ -45,10 +45,10 @@ class ReposController extends GithubApiAppController {
     }
     
     function tree($owner, $repo, $sha) {
-        if (($tree = $this->__trees($sha)) == false) {
+        //if (($tree = $this->__trees($sha)) == false) {
             $tree = $this->Repo->find('tree', array('owner' => $owner, 'repo' => $repo, 'sha' => $sha));
             $this->CacheApi->tree($owner, $repo, $sha, $tree);
-        }
+        //}
         
         for ($i = 0; $i < count($tree['tree']); $i++):
             $data['tree'][$i]['name'] = $tree['tree'][$i]['name'];
@@ -56,7 +56,7 @@ class ReposController extends GithubApiAppController {
             $data['tree'][$i]['type'] = $tree['tree'][$i]['type'];
             
             // last commit details
-            $details = $this->Repo->find('details', array('owner' => $owner, 'repo' => $repo, 'file' => $tree['tree'][$i]['name']));
+            $details = $this->Repo->find('commits', array('owner' => $owner, 'repo' => $repo, 'file' => $tree['tree'][$i]['name']));
             
             $data['tree'][$i]['message'] = $details['commits'][0]['message'];
             $data['tree'][$i]['author'] = $details['commits'][0]['committer']['name'];
@@ -64,31 +64,10 @@ class ReposController extends GithubApiAppController {
             $data['tree'][$i]['tree'] = $details['commits'][0]['tree'];
             
         endfor;
-        
-    }
-    
-    function subtree($owner, $repo, $sha, $folder) {
-        $tree = $this->Repo->find('file', array('owner' => $owner, 'repo' => $repo, 'sha' => $sha, 'file' => $folder));
-        for ($i = 0; $i < count($tree['tree']); $i++):
-            $data['tree'][$i]['name'] = $tree['tree'][$i]['name'];
-            $data['tree'][$i]['sha'] = $tree['tree'][$i]['sha'];
-            $data['tree'][$i]['type'] = $tree['tree'][$i]['type'];
-            
-            // last commit details
-            $details = $this->Repo->find('details', array('owner' => $owner, 'repo' => $repo, 'file' => $tree['tree'][$i]['name']));
-            
-            $data['tree'][$i]['message'] = $details['commits'][0]['message'];
-            $data['tree'][$i]['author'] = $details['commits'][0]['committer']['name'];
-            $data['tree'][$i]['date'] = $details['commits'][0]['committed_date'];
-            $data['tree'][$i]['tree'] = $details['commits'][0]['tree'];
-            
-        endfor;
-        
-        $data['info']['repo'] = $repo;
-        $data['info']['owner'] = $owner;
-        $data['info']['previous'] = $this->referer();
-        $this->set('data', $data);
-        $this->render('tree');
+        $data['info'] = $this->__setInfo($repo, $owner);
+		$data['viewed'] = $this->CacheApi->read('viewed');
+		$this->set('data', $data);
+		
     }
     
     function blob($owner, $repo, $sha, $file) {
@@ -109,12 +88,16 @@ class ReposController extends GithubApiAppController {
     }
     
     function readCache($key) {
-        $this->set($key, $this->CacheApi->read($key));
+        return $this->CacheApi->read($key);
     }
     
     function __trees($sha) {
         $trees = $this->CacheApi->read('trees');
-        return $trees[$sha];
+        if (!empty($trees)) {
+            if (isset($trees[$sha])) return true;
+            else return false;
+        }
+        return false;
     }
 }
 ?>
