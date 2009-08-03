@@ -3,69 +3,43 @@
 class CacheApiComponent extends Object {
     
 	var $name = 'CacheApi';	
-	//var $components = array('Cache');
 	
-	function startup() {
+	function init() {
 	    App::import('Cache');
-        Cache::config('cacheapi', array(
-            'engine' => 'File',
-            'duration'=> '+2 hours',
-            'probability'=> 100,
-            'path' => APP . 'plugins' . DS . 'github_api' . DS . 'cache',
-            'prefix' => 'cake_',
-            'lock' => false,
-            'serialize' => true)
-        );
+	}
+	
+	function startup(&$controller) {
+        Cache::set(array('path' => APP . 'plugins' . DS . $controller->plugin . DS . 'cache', 'prefix' => ''));
+	}
+	
+	function shutdown() {
+        Cache::set(array('path' => CACHE, 'prefix' => 'cake_'));
 	}
 	
 	function search($keyword) {
-	    $keywords = Cache::read('GithubApi.Search.keywords', 'cacheapi');
-	    if (!empty($keywords)) {
-	         // check count
-    	    if (count($keywords) == 5) unset($keywords[0]);
-    	    
-    	    // check unique
-    	    if (!in_array($keyword, $keywords)) $keywords[] = $keyword;
-	    }
-	    else {
-	         $keywords[] = $keyword;
-	    }
-	    
+	    $keywords = Cache::read('search');
+	    $keywords[] = $keyword;
 	    sort($keywords);
-	    Cache::write('GithubApi.Search.keywords', array_unique($keywords), 'cacheapi');
+	    Cache::write('keywords', array_unique($keywords));
 	}
 	
 	function tree($owner, $repo, $sha, $tree) {
-	    
-	    $tree = Cache::write('GithubApi.Trees', 'cacheapi');
-	    if (!empty($tree)) {
-	        $trees[$sha] = array('repo' => $repo, 'sha' => $sha, 'owner' => $owner, 'tree' => $tree);
-	    }
-	    else {
-	         $trees[$sha] = array('repo' => $repo, 'sha' => $sha, 'owner' => $owner, 'tree' => $tree);
-	    }
-	    
+	    $trees = Cache::read('trees');
+	    $trees[$sha] = array('repo' => $repo, 'sha' => $sha, 'owner' => $owner, 'tree' => $tree);
 	    sort($trees);
-	    Cache::write('GithubApi.Tress', array_unique($trees));
-	    $trees = Cache::read('GithubApi.Trees', 'cacheapi');
-	    echo '<pre>'; print_r($trees);
+	    Cache::write('trees', array_unique($trees));
 	}
 	
 	function view($owner, $repo) {
-	    $keywords = Cache::read('GithubApi.Viewed.keywords', 'cacheapi');
-	    if (!empty($keywords)) {
-	         // check count
-    	    if (count($keywords) == 5) unset($keywords[0]);
-    	    
-    	    // check unique
-    	    if (!in_array($repo, $keywords)) $keywords[] = array('repo' => $repo, 'owner' => $owner);
-	    }
-	    else {
-	        $keywords[] = array('keyword' => $repo, 'owner' => $owner);
-	    }
-	    
-	    sort($keywords);
-	    Cache::write('GithubApi.Viewed.keywords', array_unique($keywords), 'cacheapi');
+	    $viewed = Cache::read('viewed');
+	    $viewed[] = array('repo' => $repo, 'owner' => $owner);
+	    sort($viewed);
+	    Cache::write('viewed', array_unique($viewed));
 	}
+	
+	function read($key = '') {
+	    return Cache::read($key);
+	}
+	
 }
 ?>

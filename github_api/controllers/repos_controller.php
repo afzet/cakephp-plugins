@@ -2,14 +2,22 @@
 
 class ReposController extends GithubApiAppController {
     
+    // defaults
     var $name = 'Repos';
-    var $helpers = array('Html', 'Form', 'Javascript');
-    var $components = array('CacheApi');
+    var $components = array('GithubApi.CacheApi');
+    var $uses = array('GithubApi.Repo');
     
-    function beforeFilter() {
+    // keys
+    var $keys = array('keywords', 'viewed', 'trees', 'blobs');
+    
+    function index() {
+        foreach ($this->keys as $key) {
+            $data[$key] = $this->CacheApi->read($key);
+        }
+        $this->set(compact('data'));
     }
     
-    function index($term = '') {
+    function search($term = '') {
         if (!empty($this->data) || !empty($term)) {
             if (isset($this->data)) $repo = $this->data['Repo']['name'];
             else $repo = $term;
@@ -18,7 +26,7 @@ class ReposController extends GithubApiAppController {
             if (!empty($data)) $this->set('data', $data);
             else $this->Session->setFlash('No repos found!');
         }
-        $this->__keywords();
+        $this->readCache('keywords');
     }
     
     function browse($owner, $repo) {
@@ -39,7 +47,7 @@ class ReposController extends GithubApiAppController {
     function tree($owner, $repo, $sha) {
         if (($tree = $this->__trees($sha)) == false) {
             $tree = $this->Repo->find('tree', array('owner' => $owner, 'repo' => $repo, 'sha' => $sha));
-            $this->CacheApi->tree($tree, $owner, $repo, $sha);
+            $this->CacheApi->tree($owner, $repo, $sha, $tree);
         }
         
         for ($i = 0; $i < count($tree['tree']); $i++):
@@ -99,29 +107,9 @@ class ReposController extends GithubApiAppController {
         $info['previous'] = $this->referer();
         return $info;
     }
-        
-    function message($message, $redirect = array()) {
-        $this->Session->setFlash($message);
-        if (!empty($redirect)) $this->redirect($redirect, null, false); 
-    }
     
-    function __keywords() {
-        $keywords = Cache::read('GithubApi.Search.keywords', 'cacheapi');
-        $this->set('keywords', $keywords);
-    }
-    
-    function __trees($sha) {
-        $trees = Cache::read('GithubApi.Trees', 'cacheapi');
-        return $trees[$sha];
-    }
-    
-    function __viewed() {
-        $keywords = Cache::read('GithubApi.Viewed.keywords', 'cacheapi');
-        $this->set('keywords', $keywords);
-    }
-    
-    function echoDebug($data) {
-        echo '<pre>'; print_r($data); die;
+    function readCache($key) {
+        $this->set($key, $this->CacheApi->read($key));
     }
 }
 ?>
