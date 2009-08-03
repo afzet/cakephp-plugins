@@ -1,23 +1,16 @@
 ﻿<?php
 
+
 class CacheApiComponent extends Object {
     
 	var $name = 'CacheApi';	
 	
-	function init() {
-	    App::import('Cache');
-	}
-	
 	function startup(&$controller) {
-        Cache::set(array('path' => APP . 'plugins' . DS . $controller->plugin . DS . 'cache', 'prefix' => ''));
-	}
-	
-	function shutdown() {
-        Cache::config('default', array('engine' => 'File'));
+	    App::Import('Cache');
 	}
 	
 	function search($keyword) {
-	    $keywords = Cache::read('search');
+	    $keywords = Cache::read('keywords');
 	    $keywords[] = $keyword;
 	    sort($keywords);
 	    Cache::write('keywords', array_unique($keywords));

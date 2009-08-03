@@ -1,13 +1,16 @@
 ﻿<h2>My Repos</h2>
 <?
 
-echo $this->element('viewed_repos', array('plugin' => 'github_api')) . '<br />'; 
+echo $this->element('viewed_repos', array('plugin' => 'github_api')); 
+echo $this->element('searched_terms', array('plugin' => 'github_api')); 
 
 
 if (isset($data)): 
+echo '<h3>'.$data['info']['repo'].'</h3>';
 ?>
-    
+<br />
 <?php echo $html->link('&laquo; Go Back', $data['info']['previous'], null, null, false); ?>
+<br />
 <table>
 <?php
 echo $html->tableHeaders(array('', 'Name', 'Age', 'Message', 'Actions'));

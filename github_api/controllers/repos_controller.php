@@ -4,7 +4,7 @@ class ReposController extends GithubApiAppController {
     
     // defaults
     var $name = 'Repos';
-    var $components = array('GithubApi.CacheApi');
+    var $components = array('GithubApi.CacheApi', 'GithubApi.PluginHandler');
     var $uses = array('GithubApi.Repo');
     
     // keys
@@ -23,10 +23,16 @@ class ReposController extends GithubApiAppController {
             else $repo = $term;
             $this->CacheApi->search($repo);
             $data = $this->Repo->find('search', array('repo' => $repo));
-            if (!empty($data)) $this->set('data', $data);
+            if (!empty($data)) {
+                $data['keywords'] = $this->readCache('keywords');
+                $this->set('data', $data);
+            }
             else $this->Session->setFlash('No repos found!');
         }
-        $this->readCache('keywords');
+        else {
+    		$data['keywords'] = $this->readCache('keywords');
+    		$this->set('data', $data);
+        }
     }
     
     function browse($owner, $repo) {
@@ -65,7 +71,9 @@ class ReposController extends GithubApiAppController {
             
         endfor;
         $data['info'] = $this->__setInfo($repo, $owner);
-		$data['viewed'] = $this->CacheApi->read('viewed');
+        $data['keywords'] = $this->readCache('keywords');
+		$data['viewed'] = $this->readCache('viewed');
+		// $this->echoDebug($data);
 		$this->set('data', $data);
 		
     }
