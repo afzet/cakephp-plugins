@@ -13,7 +13,7 @@ class CacheApiComponent extends Object {
 	}
 	
 	function shutdown() {
-        Cache::set(array('path' => CACHE, 'prefix' => 'cake_'));
+        Cache::config('default', array('engine' => 'File'));
 	}
 	
 	function search($keyword) {

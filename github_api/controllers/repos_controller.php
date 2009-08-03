@@ -10,7 +10,7 @@ class ReposController extends GithubApiAppController {
     // keys
     var $keys = array('keywords', 'viewed', 'trees', 'blobs');
     
-    function index() {
+    function index() {   
         foreach ($this->keys as $key) {
             $data[$key] = $this->CacheApi->read($key);
         }

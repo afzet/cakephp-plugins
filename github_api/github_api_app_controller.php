@@ -4,6 +4,10 @@ class GithubApiAppController extends AppController {
         
     var $helpers = array('Html', 'Form', 'Javascript');
     
+    function beforeFilter() {
+        
+    }
+    
     function message($message, $redirect = array()) {
         $this->Session->setFlash($message);
         if (!empty($redirect)) $this->redirect($redirect, null, false); 
