@@ -3,9 +3,6 @@ echo $form->create('Repo', array('action' => 'search'));
 echo $form->input('name');
 echo $form->end('Search');
 
-echo $this->element('searched_terms', array('plugin' => 'github_api')) . '<br />'; 
-
-
 if (isset($data['repositories'])): 
 ?>
 

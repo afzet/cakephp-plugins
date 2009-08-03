@@ -20,5 +20,5 @@ switch ($type) {
 }
 ?>
 <pre name="code" class="<?php echo $filetype; ?>">
-<?php echo htmlentities($data['data']); ?>
+<?php echo htmlentities(trim($data['data'])); ?>
 </pre>
