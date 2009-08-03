@@ -19,7 +19,7 @@ class ReposController extends GithubApiAppController {
     }
     
     function browse($owner, $repo) {
-        $this->CacheApi->search($owner, $repo);
+        $this->CacheApi->view($owner, $repo);
         $info = $this->Repo->find('branches', array('owner' => $owner, 'repo' => $repo)); 
         foreach ($info['branches'] as $key => $value):
             if ($key == 'master') $this->redirect(array('action' => 'tree', $owner, $repo, $value));

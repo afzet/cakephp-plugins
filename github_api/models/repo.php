@@ -19,14 +19,16 @@ class Repo extends GithubApiAppModel {
 	    foreach ($params as $key => $value) {
 	        $this->url = str_replace('['.$key.']', $value, $this->url);
 	    }
-	    // echo $this->url; die;
+	    //echo $this->url; die;
 	    return self::__decode();
 	}
 	
 	function __connect() {
 		App::import('HttpSocket');
-		$this->Http = new HttpSocket();
-		return $this->Http->get($this->url);
+		$this->Http =& new HttpSocket();
+		$result = $this->Http->get($this->url);
+		// echo '<pre>'; print_r($result); die;
+		return $result;
 	}
 	
 	function __decode() {   	

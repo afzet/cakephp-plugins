@@ -29,7 +29,7 @@ class CacheApiComponent extends Object {
     	    if (count($keywords) == 5) unset($keywords[0]);
     	    
     	    // check unique
-    	    if (!in_array($repo, $keywords)) $keywords[] = array('repo' => $keyword, 'owner' => $owner);
+    	    if (!in_array($repo, $keywords)) $keywords[] = array('repo' => $repo, 'owner' => $owner);
 	    }
 	    else {
 	        $keywords[] = array('keyword' => $repo, 'owner' => $owner);
