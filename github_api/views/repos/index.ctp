@@ -1,10 +1,14 @@
 <?php
 echo $form->create('Repo', array('action' => 'index'));
 echo $form->input('name');
-echo $form->end('Search')
+echo $form->end('Search');
+
+echo $this->element('search' . DS . 'keywords', array('plugin' => 'github_api')) . '<br />'; 
+
+
+if (isset($data)): 
 ?>
 
-<? if (isset($data)): ?>
 <table>
 <?php
 echo $html->tableHeaders(array('Name', 'Owner', 'Description', 'Followers', 'Forks',  'Commits'));

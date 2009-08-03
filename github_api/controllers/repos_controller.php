@@ -3,14 +3,19 @@
 class ReposController extends GithubApiAppController {
     
     var $name = 'Repos';
-
+    var $helpers = array('Html', 'Form', 'Javascript');
+    var $components = array('CacheApi');
     
-    function index() {
-        if (!empty($this->data)) {
-            $data = $this->Repo->find('search', array('repo' => $this->data['Repo']['name']));
+    function index($term = '') {
+        if (!empty($this->data) || !empty($term)) {
+            if (isset($this->data)) $repo = $this->data['Repo']['name'];
+            else $repo = $term;
+            $this->CacheApi->search($repo);
+            $data = $this->Repo->find('search', array('repo' => $repo));
             if (!empty($data)) $this->set('data', $data);
             else $this->Session->setFlash('No repos found!');
         }
+        $this->__keywords();
     }
     
     function browse($owner, $repo) {       
@@ -86,6 +91,20 @@ class ReposController extends GithubApiAppController {
         $info['owner'] = $owner;
         $info['previous'] = $this->referer();
         return $info;
+    }
+        
+    function message($message, $redirect = array()) {
+        $this->Session->setFlash($message);
+        if (!empty($redirect)) $this->redirect($redirect, null, false); 
+    }
+    
+    function __keywords() {
+        $keywords = $this->Session->read('GithubApi.Search.keywords');
+        $this->set('keywords', $keywords);
+    }
+    
+    function echoDebug($data) {
+        echo '<pre>'; print_r($data); die;
     }
 }
 ?>
