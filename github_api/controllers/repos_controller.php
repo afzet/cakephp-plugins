@@ -51,10 +51,8 @@ class ReposController extends GithubApiAppController {
     }
     
     function tree($owner, $repo, $sha) {
-        //if (($tree = $this->__trees($sha)) == false) {
-            $tree = $this->Repo->find('tree', array('owner' => $owner, 'repo' => $repo, 'sha' => $sha));
-            $this->CacheApi->tree($owner, $repo, $sha, $tree);
-        //}
+        $tree = $this->Repo->find('tree', array('owner' => $owner, 'repo' => $repo, 'sha' => $sha));
+        $this->CacheApi->tree($owner, $repo, $sha, $tree);
         
         for ($i = 0; $i < count($tree['tree']); $i++):
             $data['tree'][$i]['name'] = $tree['tree'][$i]['name'];
@@ -71,11 +69,38 @@ class ReposController extends GithubApiAppController {
             
         endfor;
         $data['info'] = $this->__setInfo($repo, $owner);
+        $data['info']['tree'] = $sha;
         $data['keywords'] = $this->readCache('keywords');
 		$data['viewed'] = $this->readCache('viewed');
 		// $this->echoDebug($data);
 		$this->set('data', $data);
-		
+    }
+    
+    function subtree($owner, $repo, $sha) {
+        $tree = $this->Repo->find('subtree', array('owner' => $owner, 'repo' => $repo, 'sha' => $sha));
+        $this->CacheApi->tree($owner, $repo, $sha, $tree);
+        
+        for ($i = 0; $i < count($tree['tree']); $i++):
+            $data['tree'][$i]['name'] = $tree['tree'][$i]['name'];
+            $data['tree'][$i]['sha'] = $tree['tree'][$i]['sha'];
+            $data['tree'][$i]['type'] = $tree['tree'][$i]['type'];
+            
+            // last commit details
+            $details = $this->Repo->find('commits', array('owner' => $owner, 'repo' => $repo, 'file' => $tree['tree'][$i]['name']));
+            
+            $data['tree'][$i]['message'] = $details['commits'][0]['message'];
+            $data['tree'][$i]['author'] = $details['commits'][0]['committer']['name'];
+            $data['tree'][$i]['date'] = $details['commits'][0]['committed_date'];
+            $data['tree'][$i]['tree'] = $details['commits'][0]['tree'];
+            
+        endfor;
+        $data['info'] = $this->__setInfo($repo, $owner);
+        $data['info']['tree'] = $sha;
+        $data['keywords'] = $this->readCache('keywords');
+		$data['viewed'] = $this->readCache('viewed');
+		// $this->echoDebug($data);
+		$this->set('data', $data);
+        $this->render('tree');
     }
     
     function blob($owner, $repo, $sha, $file) {

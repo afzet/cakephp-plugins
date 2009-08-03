@@ -13,7 +13,7 @@ echo '<h3>'.$data['info']['repo'].'</h3>';
 <br />
 <table>
 <?php
-echo $html->tableHeaders(array('', 'Name', 'Age', 'Message', 'Actions'));
+echo $html->tableHeaders(array('', 'Name', 'Age', 'Message', 'Hash', 'Actions'));
 foreach ($data['tree'] as $key => $value):
 
     switch($value['type']) {
@@ -24,14 +24,23 @@ foreach ($data['tree'] as $key => $value):
                     'action' => 'blob', 
                     $data['info']['owner'], 
                     $data['info']['repo'], 
-                    $value['tree'], 
+                    $data['info']['tree'], 
                     $value['name']
                 ),
                 null, null, false
             );
             break;
-        default:       
-            $url = '';
+        default:             
+            $url = $html->link(
+                $html->image('/'.$this->plugin.'/img/tree.png'), 
+                array(
+                    'action' => 'subtree', 
+                    $data['info']['owner'], 
+                    $data['info']['repo'], 
+                    $value['sha']
+                ),
+                null, null, false
+            );
     }
     
     echo $html->tableCells(
@@ -40,6 +49,7 @@ foreach ($data['tree'] as $key => $value):
             $value['name'],
             $value['date'],
             $value['message'].'['.$value['author'].']',
+            $value['sha'],
             $url
         ), 
 		array('class'=>'row'),
