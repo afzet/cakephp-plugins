@@ -1,6 +1,6 @@
 ﻿<h2><?php echo $data['name']; ?></h2>
 <?php 
-echo $this->element('syntax');
+echo $this->element('syntax/render');
 echo $html->link('&laquo; Go Back', $info['previous'], null, null, false);
 list($file, $type) = explode('.', $data['name']); 
 switch ($type) {
@@ -8,6 +8,12 @@ switch ($type) {
 	case 'gitignore':
 	case 'htaccess':
 		$filetype = 'php';
+		break;
+	case 'rb':
+		$filetype = 'ruby';
+		break;
+	case 'xml':
+		$filetype = 'xml';
 		break;
 	default:
 		$filetype = $type;
