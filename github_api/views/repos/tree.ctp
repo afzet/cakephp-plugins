@@ -47,7 +47,7 @@ foreach ($data['tree'] as $key => $value):
         array(
             $html->image('/'.$this->plugin.'/img/'.$value['type'].'.png'),
             $value['name'],
-            $value['date'],
+            $time->relativeTime($value['date']),
             $value['message'].'['.$value['author'].']',
             $value['sha'],
             $url

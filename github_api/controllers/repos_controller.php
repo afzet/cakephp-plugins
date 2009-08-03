@@ -64,7 +64,7 @@ class ReposController extends GithubApiAppController {
             
             $data['tree'][$i]['message'] = $details['commits'][0]['message'];
             $data['tree'][$i]['author'] = $details['commits'][0]['committer']['name'];
-            $data['tree'][$i]['date'] = $details['commits'][0]['committed_date'];
+            $data['tree'][$i]['date'] = $details['commits'][0]['authored_date'];
             $data['tree'][$i]['tree'] = $details['commits'][0]['tree'];
             
         endfor;
@@ -86,11 +86,10 @@ class ReposController extends GithubApiAppController {
             $data['tree'][$i]['type'] = $tree['tree'][$i]['type'];
             
             // last commit details
-            $details = $this->Repo->find('commits', array('owner' => $owner, 'repo' => $repo, 'file' => $tree['tree'][$i]['name']));
-            
+            $details = $this->Repo->find('commits', array('owner' => $owner, 'repo' => $repo, 'file' => $tree['tree'][$i]['sha']));
             $data['tree'][$i]['message'] = $details['commits'][0]['message'];
             $data['tree'][$i]['author'] = $details['commits'][0]['committer']['name'];
-            $data['tree'][$i]['date'] = $details['commits'][0]['committed_date'];
+            $data['tree'][$i]['date'] = $details['commits'][0]['authored_date'];
             $data['tree'][$i]['tree'] = $details['commits'][0]['tree'];
             
         endfor;

@@ -2,7 +2,7 @@
 
 class GithubApiAppController extends AppController {
         
-    var $helpers = array('Html', 'Form', 'Javascript');
+    var $helpers = array('Html', 'Form', 'Javascript', 'Time');
     
     function beforeFilter() {
         
