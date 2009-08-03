@@ -3,7 +3,7 @@
 class GithubApiAppController extends AppController {
     
     var $helpers = array('Html', 'Form', 'Javascript');
-    var $uses = array('GithubApi.Github');
+    
     
     function message($message, $redirect = array()) {
         $this->Session->setFlash($message);

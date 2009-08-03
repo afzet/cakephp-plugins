@@ -1,8 +1,8 @@
 ﻿<?php
 
-class Github extends GithubApiAppModel {
+class Repo extends GithubApiAppModel {
 		
-    var $name = 'Github';
+    var $name = 'Repo';
     var $useTable = false;
 	
 	var $cmds = array(
