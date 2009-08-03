@@ -1,4 +1,5 @@
-﻿<div id="keywords">
+﻿<?php if (!empty($keywords)){ ?>
+<div id="keywords">
     <strong>Previous Search Terms: </strong>
     <?php
         foreach ($keywords as $key => $value) {
@@ -7,3 +8,4 @@
     
     ?>
 </div>
+<?php } ?>

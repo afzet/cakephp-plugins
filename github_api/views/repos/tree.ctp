@@ -1,5 +1,11 @@
 ﻿<h2>My Repos</h2>
-<? if (isset($data)): ?>
+<?
+
+echo $this->element('viewed_repos', array('plugin' => 'github_api')) . '<br />'; 
+
+
+if (isset($data)): 
+?>
     
 <?php echo $html->link('&laquo; Go Back', $data['info']['previous'], null, null, false); ?>
 <table>

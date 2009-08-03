@@ -18,7 +18,8 @@ class ReposController extends GithubApiAppController {
         $this->__keywords();
     }
     
-    function browse($owner, $repo) {       
+    function browse($owner, $repo) {
+        $this->CacheApi->search($owner, $repo);
         $info = $this->Repo->find('branches', array('owner' => $owner, 'repo' => $repo)); 
         foreach ($info['branches'] as $key => $value):
             if ($key == 'master') $this->redirect(array('action' => 'tree', $owner, $repo, $value));
@@ -100,6 +101,11 @@ class ReposController extends GithubApiAppController {
     
     function __keywords() {
         $keywords = $this->Session->read('GithubApi.Search.keywords');
+        $this->set('keywords', $keywords);
+    }
+    
+    function __viewed() {
+        $keywords = $this->Session->read('GithubApi.Viewed.keywords');
         $this->set('keywords', $keywords);
     }
     
