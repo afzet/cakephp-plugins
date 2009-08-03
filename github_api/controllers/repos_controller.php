@@ -111,5 +111,10 @@ class ReposController extends GithubApiAppController {
     function readCache($key) {
         $this->set($key, $this->CacheApi->read($key));
     }
+    
+    function __trees($sha) {
+        $trees = $this->CacheApi->read('trees');
+        return $trees[$sha];
+    }
 }
 ?>
