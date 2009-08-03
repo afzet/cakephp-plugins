@@ -6,7 +6,7 @@ echo $form->end('Search');
 echo $this->element('searched_terms', array('plugin' => 'github_api')) . '<br />'; 
 
 
-if (isset($data)): 
+if (isset($data['repositories'])): 
 ?>
 
 <table>

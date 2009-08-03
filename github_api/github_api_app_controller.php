@@ -5,7 +5,12 @@ class GithubApiAppController extends AppController {
     var $helpers = array('Html', 'Form', 'Javascript');
     
     function beforeFilter() {
-        
+        // you need to have this function defined somewhere – I guess bootstrap.php in best place
+    	$this->plugin = 'github_api';
+    }
+    
+    function beforeRender() {
+    	$this->layout = 'github';
     }
     
     function message($message, $redirect = array()) {
@@ -15,6 +20,8 @@ class GithubApiAppController extends AppController {
     
     function echoDebug($data) {
         echo '<pre>'; print_r($data); die;
-    }
+    }    
+    
+
 }
 ?>
